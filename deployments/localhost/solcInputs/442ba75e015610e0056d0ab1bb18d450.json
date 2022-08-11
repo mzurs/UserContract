@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/Profiles.sol": {
+      "content": "//SPDX-License-Identifier:MIT\npragma solidity ^0.8.7;\n\n// Pragma statements\n// Import statements\n// Interfaces\n// Libraries\n// Contracts\ncontract Profiles {\n  //Type Declaratio0n\n  error USER_EXISTS();\n  error USER_NOT_EXISTS();\n\n  //State Variable\n  mapping(address => string) private s_userId;\n  address private s_userAdmin;\n\n  //Events\n  event ProfileCreated(address, string);\n\n  //Modifiers\n  modifier ifUserNotExists() {\n    _;\n  }\n  modifier ifUserExists(address _s_userId, string memory hashID) {\n    if (\n      keccak256(abi.encodePacked((s_userId[_s_userId]))) ==\n      keccak256(abi.encodePacked((hashID)))\n    ) {\n      revert USER_EXISTS();\n    }\n    _;\n  }\n  modifier ifAddressNotExsists(address _s_userID) {\n    if (\n      keccak256(abi.encodePacked((s_userId[_s_userID]))) ==\n      keccak256(abi.encodePacked((\"0\")))\n    ) {\n      revert USER_NOT_EXISTS();\n    }\n    _;\n  }\n\n  //Functions\n\n  constructor() {\n    s_userAdmin = msg.sender;\n  }\n\n  function createProfile(address caller, string memory hashID)\n    external\n    ifUserExists(caller, hashID)\n  {\n    s_userId[caller] = hashID;\n    emit ProfileCreated(caller, hashID);\n  }\n\n  function getUserId(address caller)\n    external\n    view\n    ifAddressNotExsists(caller)\n    returns (string memory)\n  {\n    return s_userId[caller];\n  }\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
